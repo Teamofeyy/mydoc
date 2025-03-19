@@ -1,0 +1,155 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[russian, english]{babel}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    inputencoding=utf8,
+    extendedchars=true,
+    literate={а}{{\cyra}}1 {б}{{\cyrb}}1 % Добавьте другие символы, если нужно
+}
+
+\title{Руководство пользователя Taskman}
+\author{Марченко Т.Д.}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\section{Введение}
+Taskman — простое консольное приложение для управления задачами, написанное на Bash. Основные возможности:
+\begin{itemize}
+\item Добавление задач с описанием
+\item Пометка задач как выполненных
+\item Просмотр списка задач с нумерацией
+\item Удаление задач по номеру
+\item Поддержка установки через Homebrew
+\end{itemize}
+
+\section{Установка и запуск}
+\subsection{Требования к системе}
+\begin{itemize}
+\item Операционная система: macOS, Linux или WSL
+\item Bash версии 4.0+
+\item Homebrew (для установки через пакетный менеджер)
+\end{itemize}
+
+\subsection{Установка через Homebrew}
+\begin{enumerate}
+\item Добавить пользовательский репозиторий:
+\begin{lstlisting}[language=bash]
+brew tap teamofeyy/tap
+\end{lstlisting}
+
+\item Установить приложение:
+\begin{lstlisting}[language=bash]
+brew install taskman
+\end{lstlisting}
+\end{enumerate}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/install.png}
+  \caption{Пример установки через homebrew}
+  \label{fig:install}
+  \end{figure}
+
+\subsection{Ручная установка}
+\begin{enumerate}
+\item Скачать репозиторий:
+\begin{lstlisting}[language=bash]
+git clone https://github.com/Teamofeyy/Taskman.git
+\end{lstlisting}
+
+\item Установить права выполнения:
+\begin{lstlisting}[language=bash]
+chmod +x Taskman/bin/taskman
+\end{lstlisting}
+\end{enumerate}
+
+
+
+\subsection{Просмотр задач}
+\begin{lstlisting}[language=bash]
+taskman list
+\end{lstlisting}
+Пример вывода:
+\begin{verbatim}
+1. [ ] Создать документацию
+2. [x] Написать базовый функционал
+\end{verbatim}
+
+\subsection{Пометка задачи выполненной}
+\begin{lstlisting}[language=bash]
+taskman update 1
+\end{lstlisting}
+
+\subsection{Удаление задачи}
+\begin{lstlisting}[language=bash]
+taskman remove 2
+\end{lstlisting}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/usage.png}
+  \caption{Пример работы с taskman}
+  \label{fig:usage}
+  \end{figure}
+
+\section{Пример реализации}
+\begin{lstlisting}[language=bash, caption=Фрагмент скрипта taskman]
+case $1 in
+  add)
+    echo "[ ] ${@:2}" >> "$TASKS_FILE"
+    echo "Added: ${@:2}" ;;
+  list)
+    nl -w2 -s'. ' "$TASKS_FILE" ;;
+  update)
+    sed -i '' "${2}s/\[ \]/[x]/" "$TASKS_FILE" ;;
+esac
+\end{lstlisting}
+
+\section{Справочник команд}
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Команда} & \textbf{Описание} & \textbf{Пример} \\
+\hline
+add & Добавить задачу & taskman add "Тест" \\
+list & Показать задачи & taskman list \\
+update & Пометка выполнения & taskman update 1 \\
+remove & Удаление задачи & taskman remove 2 \\
+\hline
+\end{tabular}
+\caption{Таблица команд}
+\end{table}
+
+\section{Решение проблем}
+\subsection{Ошибка "No such file or directory"}
+Убедитесь что файл:
+\begin{lstlisting}[language=bash]
+ls -l $(which taskman)
+\end{lstlisting}
+
+\subsection{Задачи не сохраняются}
+Проверьте права на файл:
+\begin{lstlisting}[language=bash]
+chmod 666 ~/.taskman_tasks
+\end{lstlisting}
+
+\subsection{Обновление версии}
+\begin{lstlisting}[language=bash]
+brew upgrade taskman
+\end{lstlisting}
+
+\end{document}
+
